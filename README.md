@@ -35,8 +35,9 @@ The idea behind of the Producer is, to merge multiple messages together and save
 * Group messages again considering the PutRecord 500 records limit.
 
 For example:
-You have 30k messages and you do not merge them you need to call kinesis.putRecords 60 times (30000/500).
-With message merge, 10 as the code example we have now 3000 unique messages and the call to kinesis.putRecords is reduced to 6  (3000/500)
+You have 30k messages:
+Without merging messages, you need to call kinesis.putRecords 60 times (30000/500).
+With messages merge, 10 as the code example we have now 3000 unique messages and the call to kinesis.putRecords is reduced to 6  (3000/500)
 
 Put this at massive scale and you will see the save in cost.
 
