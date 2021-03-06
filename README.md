@@ -1,29 +1,57 @@
-# README #
+# KINESIS #
 
-This README would normally document whatever steps are necessary to get your application up and running.
+"[Amazon Kinesis Data Streams](https://aws.amazon.com/kinesis/data-streams/) is a massively scalable and durable real-time data streaming service). KDS can continuously capture gigabytes of data per second from hundreds of thousands of sources such as website clickstreams, database event streams, financial transactions, social media feeds, IT logs, and location-tracking events. The data collected is available in milliseconds to enable real-time analytics use cases such as real-time dashboards, real-time anomaly detection, dynamic pricing, and more."
 
-### What is this repository for? ###
+### Cost ###
 
-* Quick summary
-* Version
-* [Learn Markdown](https://bitbucket.org/tutorials/markdowndemo)
+* Amazon Kinesis Data Streams uses simple pay as you go pricing.
+* PUT Payload Unit (25KB)
+* https://aws.amazon.com/kinesis/data-streams/pricing/
 
-### How do I get set up? ###
+The service is billed per 25kb payload unit, so it makes sense to merge messages if you have records that are smaller in size
 
-* Summary of set up
-* Configuration
-* Dependencies
-* Database configuration
-* How to run tests
-* Deployment instructions
+### KPL or API ###
 
-### Contribution guidelines ###
+[Kinesis Producer Library (KPL)](https://docs.aws.amazon.com/streams/latest/dev/kinesis-record-deaggregation.html) provides a layer of abstraction for ingesting data, has some build-in functionalities.
+AWS SDK is the low level service integration
 
-* Writing tests
-* Code review
-* Other guidelines
+I prefer to use the aws sdk inside Lambda function and avoid wrapper etc. but it is justa preference.
 
-### Who do I talk to? ###
+### PutRecords ###
 
-* Repo owner or admin
-* Other community or team contact
+Writes multiple data records into a Kinesis data stream in a single call. More info [here](https://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/Kinesis.html#putRecords-property)
+
+* Each PutRecords request can support up to 500 records
+* Each record in the request can be as large as 1 MiB
+* Up to a limit of 5 MB for the entire request, including partition key
+
+### Producer ###
+
+The idea behind of the Producer is, to merge multiple messages together and save some money at scale when the amount of records is massive.
+
+* Get an array of messages that you want to send
+* Convert them in string because the Data paramenter accept Buffer|Uint8Array|Blob|string. Note that the kinesis library will convert them in base64.
+* Group messages in the first batch (in the example is 10 but can be less or more). You need to consider the PutRecords quota and the size of the payload that you want to send and the processing time in the consumer
+* Group messages again considering the PutRecord 500 records limit.
+
+For example:
+You have 30k messages and you do not merge them you need to call kinesis.putRecords 60 times (30000/500).
+With message merge, 10 as the code example we have now 3000 unique messages and the call to kinesis.putRecords is reduced to 6  (3000/500)
+
+Put this at massive scale and you will see the save in cost.
+
+### Consumer ###
+
+The idea behind of the Consumer is very simple
+
+* Get the Kinesis batch
+* Convert each record from base64 to ut8
+* Split the message in this case was a merge of 10
+* Process them in parallel
+
+
+
+
+
+
+
