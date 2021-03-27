@@ -8,7 +8,7 @@
 * PUT Payload Unit (25KB)
 * https://aws.amazon.com/kinesis/data-streams/pricing/
 
-The service is billed per 25kb payload unit, so it makes sense to merge messages if you have records that are smaller in size
+You are charged per 25kb payload unit, so you should merge messages if you have records that are smaller in size
 
 ### KPL or API ###
 
