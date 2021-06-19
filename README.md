@@ -8,14 +8,14 @@
 * PUT Payload Unit (25KB)
 * https://aws.amazon.com/kinesis/data-streams/pricing/
 
-You are charged per 25kb payload unit, so you should merge messages if you have records that are smaller in size
+You are charged per 25kb payload unit, so you should merge messages if you have smaller records in size.
 
 ### KPL or API ###
 
 [Kinesis Producer Library (KPL)](https://docs.aws.amazon.com/streams/latest/dev/kinesis-record-deaggregation.html) provides a layer of abstraction for ingesting data, has some build-in functionalities.
 AWS SDK is the low-level service integration
 
-I prefer to use the AWS SDK inside Lambda function and avoid wrapper etc., but it is just a preference.
+I prefer to use the AWS SDK inside the Lambda function and avoid wrapper, but it is just a preference.
 
 ### PutRecords ###
 
@@ -45,7 +45,7 @@ Put this at a massive scale, and you will see the savings in cost.
 
 ### Consumer ###
 
-The idea behind the Consumer is very simple
+The idea behind the Consumer is straightforward.
 
 * Get the Kinesis batch
 * Convert each record from base64 to ut8
